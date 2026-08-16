@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AESDIVINUS</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="app">
+      <section id="auth-screen" class="screen screen-auth active" aria-label="Inicializacao e login">
+        <div class="ambient forest"></div>
+        <div class="auth-panel">
+          <h1>AESDIVINUS</h1>
+          <p class="subtitle">Principado de Berwick, 25 de fevereiro de 1441</p>
+          <form id="login-form" class="form-grid">
+            <label>E-mail <input id="login-email" type="email" autocomplete="email" required value="william@gradon.local" /></label>
+            <label>Senha <input id="login-password" type="password" autocomplete="current-password" required value="aesdivinus" /></label>
+            <button class="primary" type="submit">ENTRAR</button>
+          </form>
+          <button id="show-register" class="outline" type="button">CRIAR NOVA CONTA</button>
+        </div>
+        <button id="open-settings-auth" class="icon-button settings-corner" type="button" aria-label="Configuracoes">⚙</button>
+      </section>
+
+      <section id="register-screen" class="screen screen-register" aria-label="Cadastro de novo usuario">
+        <div class="ambient library"></div>
+        <form id="register-form" class="scroll-panel">
+          <h2>Cadastro</h2>
+          <label>Usuario <input id="reg-user" required maxlength="24" value="Valois" /></label>
+          <label>E-mail <input id="reg-email" type="email" required value="jogador@gradon.local" /></label>
+          <label>Senha <input id="reg-password" type="password" required minlength="4" value="aesdivinus" /></label>
+          <label>Confirmacao <input id="reg-confirm" type="password" required minlength="4" value="aesdivinus" /></label>
+          <label>Idade <input id="reg-age" type="number" min="12" max="99" value="19" required /></label>
+          <div class="button-row">
+            <button id="back-login" class="wood" type="button">VOLTAR</button>
+            <button class="success" type="submit">FINALIZAR CADASTRO</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="creator-screen" class="screen screen-creator" aria-label="Criacao de personagem">
+        <div class="creator-stage">
+          <div class="pedestal">
+            <div id="avatar" class="avatar">
+              <div class="head"><span class="eye left"></span><span class="eye right"></span></div>
+              <div class="hair"></div>
+              <div class="body"></div>
+              <div class="weapon"></div>
+            </div>
+          </div>
+        </div>
+        <aside class="creator-panel">
+          <h2>Príncipe William</h2>
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="body" type="button">Corpo</button>
+            <button class="tab" data-tab="personality" type="button">Arquétipo</button>
+            <button class="tab" data-tab="route" type="button">Rota</button>
+          </div>
+          <div id="tab-body" class="tab-page active">
+            <label>Nome <input id="char-name" maxlength="24" value="William de Augusto" /></label>
+            <label>Cabelo <select id="hair-color"></select></label>
+            <label>Pele <select id="skin-color"></select></label>
+          </div>
+          <div id="tab-personality" class="tab-page">
+            <div id="personality-options" class="option-grid"></div>
+          </div>
+          <div id="tab-route" class="tab-page">
+            <div id="route-options" class="route-list"></div>
+          </div>
+          <dl id="stats-preview" class="stats-list"></dl>
+          <button id="start-game" class="primary" type="button">INICIAR PRÓLOGO</button>
+        </aside>
+      </section>
+
+      <section id="loading-screen" class="screen screen-loading" aria-label="Carregamento rapido">
+        <div class="loading-card">
+          <h2>Crônicas de Gradon</h2>
+          <p id="lore-card"></p>
+          <div class="progress-track"><div id="loading-bar"></div></div>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen screen-game" aria-label="Gameplay">
+        <canvas id="game-canvas" width="1280" height="720"></canvas>
+        <div id="hud">
+          <div class="bar hp"><span>HP</span><i id="hp-fill"></i></div>
+          <div class="bar courage"><span>Coragem</span><i id="courage-fill"></i></div>
+          <div id="loyalty-meter"><b id="loyalty-fill"></b><span id="loyalty-text">100%</span></div>
+          <div id="brand-strip"></div>
+          <div id="chapter-label"></div>
+        </div>
+        <div id="squad-panel">
+          <button data-order="shield" type="button">1 Escudos</button>
+          <button data-order="archers" type="button">2 Arqueiros</button>
+          <button data-order="charge" type="button">3 Investida</button>
+        </div>
+        <div id="combat-help">A/D mover · Espaço pular · J atacar · K esquivar · E interagir · 1/2/3 ordens · P pausa</div>
+        <div id="dialogue" class="dialogue hidden">
+          <strong id="dialogue-speaker"></strong>
+          <p id="dialogue-text"></p>
+          <div id="choices"></div>
+        </div>
+        <aside id="side-drawer" class="side-drawer">
+          <button id="close-drawer" class="icon-button" type="button" aria-label="Fechar">×</button>
+          <div id="drawer-content"></div>
+        </aside>
+        <button id="pause-button" class="icon-button pause-button" type="button" aria-label="Pausa">Ⅱ</button>
+      </section>
+
+      <section id="ending-screen" class="screen screen-ending" aria-label="Resumo do capitulo">
+        <div class="ending-panel">
+          <h2>Prólogo concluído</h2>
+          <p id="ending-summary"></p>
+          <div id="ending-stats"></div>
+          <button id="restart" class="primary" type="button">JOGAR NOVAMENTE</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="settings-dialog">
+      <form method="dialog">
+        <h2>Configurações</h2>
+        <label>Perfil gráfico
+          <select id="graphics-mode">
+            <option value="low">Leve / 2D Parallax</option>
+            <option value="medium">Médio / 2.5D</option>
+            <option value="ultra">Ultra visual</option>
+          </select>
+        </label>
+        <label class="check"><input id="reduce-vfx" type="checkbox" /> Reduzir partículas</label>
+        <label>Volume <input id="volume" type="range" min="0" max="100" value="60" /></label>
+        <button class="primary" value="ok">OK</button>
+      </form>
+    </dialog>
+
+    <script src="game.js"></script>
+  </body>
+</html>

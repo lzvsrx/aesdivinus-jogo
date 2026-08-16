@@ -1,0 +1,14 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Category": "Games",
+  "Description": "AESDIVINUS - lightweight Unreal Engine playable prototype based on the GDD.",
+  "DisableEnginePluginsByDefault": true,
+  "Modules": [
+    {
+      "Name": "AESDIVINUS",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}

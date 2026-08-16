@@ -52,6 +52,9 @@ Plugins/**/Binaries/*
 
 # Builds
 Build/*
+BuildShipping*/
+BuildUnicoAESDIVINUS/
+BuildDefinitivaAESDIVINUS/
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
@@ -73,3 +76,11 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Unreal generated packaged output and local logs
+Saved/StagedBuilds/
+Saved/Cooked/
+Saved/Logs/
+Saved/Automation/
+*.pdb
+*.ilk
