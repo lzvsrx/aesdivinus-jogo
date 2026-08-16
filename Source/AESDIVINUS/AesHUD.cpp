@@ -38,47 +38,65 @@ void AAesHUD::DrawLogin(AAesPlayerController* PC)
     const float W = Canvas->ClipX;
     const float H = Canvas->ClipY;
     DrawInterfaceBackdrop();
-    DrawOrnateFrame(24.0f, 18.0f, W - 48.0f, H - 36.0f, TEXT("AESDIVINUS: GAME DESIGN DOCUMENT - INTERFACES"));
+    DrawOrnateFrame(24.0f, 18.0f, W - 48.0f, H - 36.0f, TEXT("AESDIVINUS: INTERFACES"));
 
     const bool bRegister = PC->Screen == EAesScreen::Register;
-    const float Margin = 42.0f;
-    const float Top = 48.0f;
-    const float LoginW = FMath::Clamp(W * 0.39f, 360.0f, 520.0f);
-    const float LoginH = FMath::Clamp(H * 0.32f, 210.0f, 290.0f);
-    const float RegisterW = FMath::Clamp(W * 0.39f, 420.0f, 620.0f);
-    const float RegisterH = FMath::Clamp(H * 0.38f, 250.0f, 340.0f);
-    const float RegisterX = W - Margin - RegisterW;
 
-    DrawOrnateFrame(Margin, Top, LoginW, LoginH, TEXT("INICIALIZACAO & LOGIN"));
-    DrawForestArtPanel(Margin + 18.0f, Top + 34.0f, LoginW - 36.0f, LoginH - 56.0f, true);
-    DrawIconSeal(Margin + 48.0f, Top + 64.0f, 0.45f, FLinearColor(0.74f, 0.76f, 0.70f, 1.0f));
-    DrawIconSeal(Margin + 46.0f, Top + LoginH - 54.0f, 0.52f, FLinearColor(0.55f, 0.54f, 0.50f, 1.0f));
-    DrawPanel(Margin + 92.0f, Top + 74.0f, LoginW - 184.0f, 118.0f, FLinearColor(0.01f, 0.012f, 0.012f, 0.34f));
-    float LoginTextW = 0.0f;
-    float LoginTextH = 0.0f;
-    GetTextSize(TEXT("AESDIVINUS"), LoginTextW, LoginTextH, nullptr, 1.35f);
-    DrawText(TEXT("AESDIVINUS"), FLinearColor(0.91f, 0.82f, 0.62f, 1.0f), Margin + (LoginW - LoginTextW) * 0.5f, Top + 88.0f, nullptr, 1.35f);
-    GetTextSize(TEXT("Pressione ENTER para comecar"), LoginTextW, LoginTextH, nullptr, 0.78f);
-    DrawText(TEXT("Pressione ENTER para comecar"), FLinearColor(0.92f, 0.90f, 0.84f, 1.0f), Margin + (LoginW - LoginTextW) * 0.5f, Top + 134.0f, nullptr, 0.78f);
-    DrawAesButton(Margin + LoginW * 0.50f - 74.0f, Top + 164.0f, 148.0f, 30.0f, bRegister ? TEXT("FINALIZAR") : TEXT("ENVIAR"), true);
-    DrawAesButton(Margin + LoginW * 0.50f - 74.0f, Top + 203.0f, 148.0f, 30.0f, bRegister ? TEXT("VOLTAR") : TEXT("CRIAR CONTA"), false);
-
-    DrawOrnateFrame(RegisterX, Top, RegisterW, RegisterH, TEXT("CADASTRO DE USUARIO"));
-    DrawLibraryArtPanel(RegisterX + 18.0f, Top + 34.0f, RegisterW - 36.0f, RegisterH - 56.0f);
-    DrawPanel(RegisterX + RegisterW * 0.25f, Top + 64.0f, RegisterW * 0.52f, RegisterH - 112.0f, FLinearColor(0.02f, 0.026f, 0.026f, 0.86f));
-    DrawInputField(RegisterX + RegisterW * 0.32f, Top + 96.0f, RegisterW * 0.38f, TEXT("Nome de Usuario"), TEXT("William"), false);
-    DrawInputField(RegisterX + RegisterW * 0.32f, Top + 150.0f, RegisterW * 0.38f, TEXT("E-mail"), TEXT("william@gradon.local"), false);
-    DrawInputField(RegisterX + RegisterW * 0.32f, Top + 204.0f, RegisterW * 0.38f, TEXT("Senha"), TEXT("aesdivinus"), true);
-    DrawInputField(RegisterX + RegisterW * 0.32f, Top + 258.0f, RegisterW * 0.38f, TEXT("Confirmacao de Senha"), TEXT("aesdivinus"), true);
-    DrawAesButton(RegisterX + RegisterW * 0.18f, Top + RegisterH - 48.0f, 130.0f, 28.0f, TEXT("FINALIZAR"), true);
-    DrawAesButton(RegisterX + RegisterW * 0.50f, Top + RegisterH - 48.0f, 130.0f, 28.0f, TEXT("VOLTAR"), false);
-
-    DrawCreatorShowcase(W * 0.315f, H * 0.18f, W * 0.37f, H * 0.35f, PC);
-    DrawStoryArtPanel(Margin, H * 0.54f, LoginW, H * 0.32f);
-    DrawBattlePreviewPanel(RegisterX, H * 0.54f, RegisterW, H * 0.32f);
-    if (PC->bHasSavedGame)
+    const float FlowW = FMath::Min(W - 160.0f, 780.0f);
+    const float FlowX = (W - FlowW) * 0.5f;
+    const float FlowY = 76.0f;
+    const TCHAR* Steps[] = { TEXT("LOGIN"), TEXT("CADASTRO"), TEXT("PERSONAGEM"), TEXT("HISTORIA"), TEXT("BATALHA") };
+    for (int32 I = 0; I < 5; ++I)
     {
-        DrawText(TEXT("SALVO: ENTER continua do banco local"), FLinearColor(0.0f, 0.92f, 0.52f, 1.0f), Margin + 58.0f, H * 0.84f, nullptr, 0.76f);
+        const bool bActive = (I == 0 && !bRegister) || (I == 1 && bRegister);
+        const float StepX = FlowX + I * (FlowW / 5.0f);
+        DrawPanel(StepX + 8.0f, FlowY, FlowW / 5.0f - 16.0f, 22.0f, bActive ? FLinearColor(0.0f, 0.42f, 0.28f, 0.95f) : FLinearColor(0.08f, 0.07f, 0.055f, 0.90f));
+        DrawText(Steps[I], bActive ? FLinearColor::White : FLinearColor(0.68f, 0.62f, 0.50f, 1.0f), StepX + 20.0f, FlowY + 5.0f, nullptr, 0.58f);
+    }
+
+    if (!bRegister)
+    {
+        const float LoginW = FMath::Clamp(W * 0.54f, 520.0f, 760.0f);
+        const float LoginH = FMath::Clamp(H * 0.56f, 360.0f, 500.0f);
+        const float LoginX = (W - LoginW) * 0.5f;
+        const float LoginY = H * 0.18f;
+
+        DrawOrnateFrame(LoginX, LoginY, LoginW, LoginH, TEXT("INICIALIZACAO & LOGIN"));
+        DrawForestArtPanel(LoginX + 22.0f, LoginY + 38.0f, LoginW - 44.0f, LoginH - 68.0f, true);
+        DrawIconSeal(LoginX + 54.0f, LoginY + 72.0f, 0.55f, FLinearColor(0.74f, 0.76f, 0.70f, 1.0f));
+        DrawIconSeal(LoginX + 58.0f, LoginY + LoginH - 68.0f, 0.62f, FLinearColor(0.55f, 0.54f, 0.50f, 1.0f));
+        DrawPanel(LoginX + LoginW * 0.31f, LoginY + LoginH * 0.21f, LoginW * 0.38f, 156.0f, FLinearColor(0.01f, 0.012f, 0.012f, 0.42f));
+
+        float LoginTextW = 0.0f;
+        float LoginTextH = 0.0f;
+        GetTextSize(TEXT("AESDIVINUS"), LoginTextW, LoginTextH, nullptr, 1.55f);
+        DrawText(TEXT("AESDIVINUS"), FLinearColor(0.91f, 0.82f, 0.62f, 1.0f), LoginX + (LoginW - LoginTextW) * 0.5f, LoginY + LoginH * 0.26f, nullptr, 1.55f);
+        GetTextSize(TEXT("Pressione ENTER para comecar"), LoginTextW, LoginTextH, nullptr, 0.82f);
+        DrawText(TEXT("Pressione ENTER para comecar"), FLinearColor(0.92f, 0.90f, 0.84f, 1.0f), LoginX + (LoginW - LoginTextW) * 0.5f, LoginY + LoginH * 0.40f, nullptr, 0.82f);
+        DrawAesButton(LoginX + LoginW * 0.5f - 86.0f, LoginY + LoginH * 0.52f, 172.0f, 34.0f, TEXT("ENVIAR"), true);
+        DrawAesButton(LoginX + LoginW * 0.5f - 86.0f, LoginY + LoginH * 0.62f, 172.0f, 34.0f, TEXT("CRIAR CONTA"), false);
+
+        if (PC->bHasSavedGame)
+        {
+            DrawText(TEXT("SALVO: ENTER continua do banco local"), FLinearColor(0.0f, 0.92f, 0.52f, 1.0f), LoginX + 38.0f, LoginY + LoginH - 36.0f, nullptr, 0.76f);
+        }
+    }
+    else
+    {
+        const float RegisterW = FMath::Clamp(W * 0.58f, 650.0f, 900.0f);
+        const float RegisterH = FMath::Clamp(H * 0.62f, 430.0f, 560.0f);
+        const float RegisterX = (W - RegisterW) * 0.5f;
+        const float RegisterY = H * 0.16f;
+
+        DrawOrnateFrame(RegisterX, RegisterY, RegisterW, RegisterH, TEXT("CADASTRO DE USUARIO"));
+        DrawLibraryArtPanel(RegisterX + 22.0f, RegisterY + 38.0f, RegisterW - 44.0f, RegisterH - 72.0f);
+        DrawPanel(RegisterX + RegisterW * 0.25f, RegisterY + 76.0f, RegisterW * 0.50f, RegisterH - 154.0f, FLinearColor(0.02f, 0.026f, 0.026f, 0.86f));
+        DrawInputField(RegisterX + RegisterW * 0.32f, RegisterY + 116.0f, RegisterW * 0.36f, TEXT("Nome de Usuario"), TEXT("William"), false);
+        DrawInputField(RegisterX + RegisterW * 0.32f, RegisterY + 178.0f, RegisterW * 0.36f, TEXT("E-mail"), TEXT("william@gradon.local"), false);
+        DrawInputField(RegisterX + RegisterW * 0.32f, RegisterY + 240.0f, RegisterW * 0.36f, TEXT("Senha"), TEXT("aesdivinus"), true);
+        DrawInputField(RegisterX + RegisterW * 0.32f, RegisterY + 302.0f, RegisterW * 0.36f, TEXT("Confirmacao de Senha"), TEXT("aesdivinus"), true);
+        DrawAesButton(RegisterX + RegisterW * 0.33f - 150.0f, RegisterY + RegisterH - 64.0f, 150.0f, 32.0f, TEXT("FINALIZAR"), true);
+        DrawAesButton(RegisterX + RegisterW * 0.67f, RegisterY + RegisterH - 64.0f, 150.0f, 32.0f, TEXT("VOLTAR"), false);
     }
 
     DrawPanel(W * 0.5f - 260.0f, H - 36.0f, 520.0f, 20.0f, FLinearColor(0.03f, 0.03f, 0.026f, 0.92f));
