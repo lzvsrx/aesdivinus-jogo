@@ -304,16 +304,49 @@ void AAesHUD::DrawForestScene(AAesPlayerController* PC, float CameraX)
 {
     const float W = Canvas->ClipX;
     const float H = Canvas->ClipY;
-    const FLinearColor SkyTop = PC->ChapterIndex == 2 ? FLinearColor(0.13f, 0.03f, 0.03f, 1.0f) : PC->ChapterIndex == 1 ? FLinearColor(0.05f, 0.08f, 0.12f, 1.0f) : FLinearColor(0.12f, 0.22f, 0.16f, 1.0f);
-    const FLinearColor SkyMid = PC->ChapterIndex == 2 ? FLinearColor(0.23f, 0.07f, 0.06f, 1.0f) : PC->ChapterIndex == 1 ? FLinearColor(0.12f, 0.18f, 0.22f, 1.0f) : FLinearColor(0.25f, 0.43f, 0.33f, 1.0f);
+    const float T = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0f;
+    const FLinearColor SkyTop = PC->ChapterIndex == 2 ? FLinearColor(0.11f, 0.025f, 0.028f, 1.0f) : PC->ChapterIndex == 1 ? FLinearColor(0.035f, 0.070f, 0.105f, 1.0f) : FLinearColor(0.08f, 0.18f, 0.16f, 1.0f);
+    const FLinearColor SkyMid = PC->ChapterIndex == 2 ? FLinearColor(0.25f, 0.060f, 0.045f, 1.0f) : PC->ChapterIndex == 1 ? FLinearColor(0.10f, 0.17f, 0.22f, 1.0f) : FLinearColor(0.23f, 0.43f, 0.36f, 1.0f);
     DrawPanel(0, 0, W, H, SkyTop);
     DrawPanel(0, H * 0.16f, W, H * 0.32f, SkyMid);
-    DrawPanel(0, H * 0.46f, W, H * 0.23f, FLinearColor(0.15f, 0.31f, 0.25f, 0.58f));
+    DrawPanel(0, H * 0.46f, W, H * 0.23f, FLinearColor(0.13f, 0.29f, 0.24f, 0.62f));
+
+    const float MoonX = W * 0.73f - CameraX * 0.015f;
+    const float MoonY = H * 0.12f;
+    if (PC->ChapterIndex < 2)
+    {
+        DrawPanel(MoonX - 28.0f, MoonY - 28.0f, 56.0f, 56.0f, FLinearColor(0.82f, 0.88f, 0.78f, 0.18f));
+        DrawPanel(MoonX - 18.0f, MoonY - 18.0f, 36.0f, 36.0f, FLinearColor(0.90f, 0.92f, 0.78f, 0.40f));
+    }
+    else
+    {
+        DrawPanel(W * 0.76f - 34.0f, H * 0.10f - 26.0f, 68.0f, 52.0f, FLinearColor(0.80f, 0.10f, 0.04f, 0.22f));
+    }
+
+    for (int32 I = 0; I < 8; ++I)
+    {
+        const float RidgeX = FMath::Fmod(I * 190.0f - CameraX * 0.025f, W + 240.0f) - 120.0f;
+        const float RidgeY = H * (0.40f + 0.025f * (I % 3));
+        DrawSegment(RidgeX, RidgeY, RidgeX + 94.0f, RidgeY - 76.0f, FLinearColor(0.03f, 0.08f, 0.08f, 0.36f), 36.0f);
+        DrawSegment(RidgeX + 94.0f, RidgeY - 76.0f, RidgeX + 220.0f, RidgeY, FLinearColor(0.03f, 0.08f, 0.08f, 0.34f), 36.0f);
+    }
+
+    if (PC->ChapterIndex >= 1)
+    {
+        const float CastleX = W * 0.70f - CameraX * 0.06f;
+        const float BaseY = H * 0.45f;
+        DrawPanel(CastleX - 85.0f, BaseY - 120.0f, 170.0f, 122.0f, FLinearColor(0.035f, 0.045f, 0.055f, 0.52f));
+        DrawPanel(CastleX - 112.0f, BaseY - 92.0f, 42.0f, 94.0f, FLinearColor(0.03f, 0.04f, 0.05f, 0.56f));
+        DrawPanel(CastleX + 70.0f, BaseY - 102.0f, 44.0f, 104.0f, FLinearColor(0.03f, 0.04f, 0.05f, 0.56f));
+        DrawSegment(CastleX - 112.0f, BaseY - 92.0f, CastleX - 91.0f, BaseY - 126.0f, FLinearColor(0.03f, 0.04f, 0.05f, 0.56f), 6.0f);
+        DrawSegment(CastleX + 114.0f, BaseY - 102.0f, CastleX + 92.0f, BaseY - 138.0f, FLinearColor(0.03f, 0.04f, 0.05f, 0.56f), 6.0f);
+        DrawPanel(CastleX - 20.0f, BaseY - 62.0f, 40.0f, 64.0f, FLinearColor(0.01f, 0.012f, 0.016f, 0.60f));
+    }
 
     for (int32 I = 0; I < 7; ++I)
     {
         const float X = FMath::Fmod(I * 250.0f - CameraX * 0.035f, W + 260.0f) - 130.0f;
-        DrawSegment(X, 40.0f, X + 150.0f, H - 110.0f, FLinearColor(0.93f, 0.82f, 0.46f, PC->ChapterIndex == 0 ? 0.12f : 0.05f), 18.0f);
+        DrawSegment(X, 40.0f, X + 150.0f, H - 110.0f, FLinearColor(0.93f, 0.82f, 0.46f, PC->ChapterIndex == 0 ? 0.14f : 0.07f), 18.0f);
     }
 
     for (int32 Layer = 0; Layer < 3; ++Layer)
@@ -341,6 +374,14 @@ void AAesHUD::DrawForestScene(AAesPlayerController* PC, float CameraX)
         }
     }
 
+    for (int32 I = 0; I < 34; ++I)
+    {
+        const float FireX = FMath::Fmod(I * 73.0f - CameraX * 0.11f + FMath::Sin(T + I) * 9.0f, W + 80.0f) - 40.0f;
+        const float FireY = H * 0.18f + FMath::Fmod(I * 41.0f + T * 14.0f, H * 0.46f);
+        const FLinearColor Spark = PC->ChapterIndex == 2 ? FLinearColor(1.0f, 0.25f, 0.04f, 0.44f) : FLinearColor(0.52f, 1.0f, 0.68f, 0.32f);
+        DrawPanel(FireX, FireY, 3.0f, 3.0f, Spark);
+    }
+
     for (int32 I = -1; I < 9; ++I)
     {
         const float X = FMath::Fmod(I * 210.0f - CameraX * 0.24f, W + 240.0f) - 120.0f;
@@ -352,6 +393,7 @@ void AAesHUD::DrawForestScene(AAesPlayerController* PC, float CameraX)
     }
 
     const float GroundY = H - 80.0f;
+    DrawPanel(0, GroundY - 42.0f, W, 28.0f, FLinearColor(0.08f, 0.18f, 0.10f, 0.92f));
     DrawPanel(0, GroundY - 24.0f, W, 24.0f, FLinearColor(0.13f, 0.20f, 0.12f, 1.0f));
     DrawPanel(0, GroundY, W, 80.0f, PC->ChapterIndex == 2 ? FLinearColor(0.18f, 0.10f, 0.08f, 1.0f) : FLinearColor(0.28f, 0.23f, 0.17f, 1.0f));
     for (int32 I = 0; I < 30; ++I)
@@ -359,6 +401,13 @@ void AAesHUD::DrawForestScene(AAesPlayerController* PC, float CameraX)
         const float X = FMath::Fmod(I * 81.0f - CameraX * 0.55f, W + 90.0f) - 40.0f;
         DrawPanel(X, GroundY - 12.0f + (I % 4) * 3.0f, 42.0f, 5.0f, FLinearColor(0.10f, 0.12f, 0.08f, 0.55f));
         DrawSegment(X + 8.0f, GroundY - 2.0f, X + 46.0f, GroundY - 16.0f, FLinearColor(0.16f, 0.10f, 0.06f, 0.75f), 3.0f);
+    }
+
+    for (int32 I = 0; I < 14; ++I)
+    {
+        const float ReedX = FMath::Fmod(I * 118.0f - CameraX * 0.75f, W + 140.0f) - 70.0f;
+        DrawSegment(ReedX, GroundY - 4.0f, ReedX - 10.0f, GroundY - 42.0f, FLinearColor(0.08f, 0.18f, 0.08f, 0.85f), 3.0f);
+        DrawSegment(ReedX + 9.0f, GroundY - 2.0f, ReedX + 20.0f, GroundY - 35.0f, FLinearColor(0.10f, 0.22f, 0.10f, 0.82f), 3.0f);
     }
 
     if (PC->ChapterIndex == 1)
@@ -369,8 +418,8 @@ void AAesHUD::DrawForestScene(AAesPlayerController* PC, float CameraX)
     {
         for (int32 I = 0; I < 42; ++I)
         {
-            const float X = FMath::Fmod(I * 47.0f + GetWorld()->GetTimeSeconds() * 32.0f, W);
-            const float Y = FMath::Fmod(I * 89.0f + GetWorld()->GetTimeSeconds() * 110.0f, H);
+            const float X = FMath::Fmod(I * 47.0f + T * 32.0f, W);
+            const float Y = FMath::Fmod(I * 89.0f + T * 110.0f, H);
             DrawSegment(X, Y, X - 3.0f, Y + 16.0f, FLinearColor(0.55f, 0.0f, 0.0f, 0.42f), 2.0f);
         }
     }
@@ -395,6 +444,8 @@ void AAesHUD::DrawWilliam(float X, float FeetY, float Facing, bool bAesBlade, fl
     const FLinearColor ValoisBlue(0.0f, 0.14f, 0.40f, 1.0f);
     const FLinearColor Outline(0.025f, 0.025f, 0.030f, 1.0f);
 
+    AES_R(-42.0f, -7.0f, 86.0f, 9.0f, FLinearColor(0.0f, 0.0f, 0.0f, 0.30f));
+    AES_R(-30.0f, -95.0f, 60.0f, 88.0f, FLinearColor(0.02f, 0.86f, 0.52f, bAesBlade ? 0.08f : 0.0f));
     AES_R(-28.0f, -92.0f, 13.0f, 82.0f, FLinearColor(0.0f, 0.05f, 0.17f, 0.78f));
     AES_R(-21.0f, -18.0f + Walk, 15.0f, 18.0f, Outline);
     AES_R(6.0f, -18.0f - Walk, 15.0f, 18.0f, Outline);
@@ -408,6 +459,8 @@ void AAesHUD::DrawWilliam(float X, float FeetY, float Facing, bool bAesBlade, fl
     AES_R(-25.0f, -95.0f, 50.0f, 43.0f, Outline);
     AES_R(-21.0f, -91.0f, 42.0f, 39.0f, Steel);
     AES_R(-16.0f, -87.0f, 32.0f, 10.0f, SteelLight);
+    AES_R(-20.0f, -88.0f, 5.0f, 31.0f, FLinearColor(0.80f, 0.85f, 0.84f, 0.42f));
+    AES_R(14.0f, -86.0f, 5.0f, 28.0f, FLinearColor(0.06f, 0.07f, 0.08f, 0.42f));
     AES_R(-19.0f, -77.0f, 38.0f, 26.0f, ValoisBlue);
     AES_R(-4.0f, -94.0f, 8.0f, 50.0f, Aes);
     AES_R(-2.0f, -89.0f, 4.0f, 40.0f, AesGlow);
@@ -436,6 +489,10 @@ void AAesHUD::DrawWilliam(float X, float FeetY, float Facing, bool bAesBlade, fl
 
     AES_L(F * 21.0f, -78.0f, F * 55.0f, -108.0f, Outline, 7.0f);
     AES_L(F * 21.0f, -78.0f, F * 55.0f, -108.0f, SteelDark, 5.0f);
+    if (bAesBlade)
+    {
+        AES_L(F * 35.0f, -103.0f, F * 83.0f, -146.0f, FLinearColor(0.0f, 0.95f, 0.58f, 0.24f), 10.0f);
+    }
     AES_L(F * 35.0f, -103.0f, F * 83.0f, -146.0f, bAesBlade ? Aes : Gold, 5.0f);
     AES_L(F * 40.0f, -98.0f, F * 88.0f, -141.0f, bAesBlade ? FLinearColor(0.68f, 0.95f, 0.78f, 0.90f) : FLinearColor(0.95f, 0.87f, 0.56f, 0.90f), 1.5f);
     AES_R(F * 28.0f - 4.0f, -106.0f, 8.0f, 6.0f, Gold);
@@ -480,6 +537,7 @@ void AAesHUD::DrawCompanionFigure(const FString& RoleName, float X, float FeetY,
     if (bRoger) { Cloth = FLinearColor(0.13f, 0.30f, 0.20f, 1.0f); Hair = FLinearColor(0.86f, 0.66f, 0.30f, 1.0f); Accent = FLinearColor(0.48f, 0.58f, 0.50f, 1.0f); }
     if (bAlbert) { Cloth = FLinearColor(0.43f, 0.18f, 0.05f, 1.0f); Hair = FLinearColor(0.78f, 0.18f, 0.06f, 1.0f); Steel = FLinearColor(0.62f, 0.34f, 0.13f, 1.0f); Accent = FLinearColor(0.95f, 0.56f, 0.20f, 1.0f); }
 
+    AES_CR(-34.0f, -6.0f, 68.0f, 8.0f, FLinearColor(0.0f, 0.0f, 0.0f, 0.28f));
     AES_CR(-13.0f, -16.0f, 11.0f, 16.0f, Dark);
     AES_CR(4.0f, -16.0f, 11.0f, 16.0f, Dark);
     AES_CR(-12.0f, -53.0f, 10.0f, 38.0f, Dark);
@@ -498,7 +556,9 @@ void AAesHUD::DrawCompanionFigure(const FString& RoleName, float X, float FeetY,
     }
     AES_CR(-19.0f, -86.0f, 38.0f, 38.0f, Cloth);
     AES_CR(-21.0f, -92.0f, 42.0f, 12.0f, Steel);
+    AES_CR(-18.0f, -84.0f, 5.0f, 32.0f, FLinearColor(1.0f, 1.0f, 0.86f, 0.16f));
     AES_CR(-3.0f, -89.0f, 6.0f, 40.0f, Accent);
+    AES_CR(-1.0f, -86.0f, 2.0f, 34.0f, FLinearColor(0.52f, 1.0f, 0.72f, 0.54f));
     AES_CR(-27.0f, -80.0f, 10.0f, 32.0f, Steel);
     AES_CR(17.0f, -80.0f, 10.0f, 32.0f, Steel);
     AES_CR(-13.0f, -122.0f, 26.0f, 31.0f, Skin);
@@ -524,6 +584,10 @@ void AAesHUD::DrawCompanionFigure(const FString& RoleName, float X, float FeetY,
     }
     else
     {
+        if (bHilda || bEthan || bAlbert)
+        {
+            AES_CL(23.0f, -70.0f, 61.0f, -24.0f, FLinearColor(0.0f, 0.90f, 0.52f, 0.20f), 7.0f);
+        }
         AES_CL(23.0f, -70.0f, 61.0f, -24.0f, Steel, 4.0f);
         AES_CL(28.0f, -65.0f, 66.0f, -19.0f, FLinearColor(0.80f, 0.88f, 0.92f, 1.0f), 1.5f);
     }
@@ -565,10 +629,13 @@ void AAesHUD::DrawEnemyFigure(const FAesEnemyState& Enemy, float X, float FeetY)
 #define AES_ER(RX, RY, RW, RH, COLOR) DrawPanel(X + (RX) * S, FeetY + (RY) * S, (RW) * S, (RH) * S, (COLOR))
 #define AES_EL(X1, Y1, X2, Y2, COLOR, THICK) DrawSegment(X + (X1) * S, FeetY + (Y1) * S, X + (X2) * S, FeetY + (Y2) * S, (COLOR), (THICK) * S)
 
+    AES_ER(-54.0f, -7.0f, 108.0f, 9.0f, FLinearColor(0.0f, 0.0f, 0.0f, 0.30f));
     if (Enemy.Type.Contains(TEXT("Canis")))
     {
         const FLinearColor Hide = Enemy.HitFlash > 0.0f ? FLinearColor(0.95f, 0.20f, 0.16f, 1.0f) : FLinearColor(0.30f, 0.10f, 0.08f, 1.0f);
+        AES_ER(-64.0f, -58.0f, 112.0f, 48.0f, FLinearColor(0.90f, 0.05f, 0.0f, 0.09f));
         AES_ER(-58.0f, -50.0f, 90.0f, 42.0f, Hide);
+        AES_ER(-45.0f, -44.0f, 70.0f, 8.0f, FLinearColor(0.55f, 0.17f, 0.12f, 0.55f));
         AES_ER(18.0f, -72.0f, 38.0f, 32.0f, Hide);
         AES_ER(28.0f, -66.0f, 8.0f, 7.0f, Magma);
         AES_ER(44.0f, -66.0f, 8.0f, 7.0f, Magma);
@@ -584,6 +651,7 @@ void AAesHUD::DrawEnemyFigure(const FAesEnemyState& Enemy, float X, float FeetY)
     else if (Enemy.Type.Contains(TEXT("Stipulation")))
     {
         const FLinearColor Pale = Enemy.HitFlash > 0.0f ? FLinearColor(1.0f, 0.32f, 0.32f, 1.0f) : FLinearColor(0.72f, 0.72f, 0.70f, 1.0f);
+        AES_ER(-26.0f, -94.0f, 52.0f, 92.0f, FLinearColor(0.20f, 0.80f, 0.95f, 0.08f));
         AES_ER(-22.0f, -86.0f, 44.0f, 84.0f, FLinearColor(0.04f, 0.05f, 0.055f, 1.0f));
         AES_ER(-18.0f, -121.0f, 36.0f, 34.0f, Pale);
         AES_ER(-14.0f, -132.0f, 28.0f, 14.0f, FLinearColor(0.02f, 0.025f, 0.030f, 1.0f));
@@ -596,6 +664,7 @@ void AAesHUD::DrawEnemyFigure(const FAesEnemyState& Enemy, float X, float FeetY)
     }
     else if (Enemy.Type.Contains(TEXT("Bezalel")))
     {
+        AES_ER(-32.0f, -96.0f, 64.0f, 96.0f, FLinearColor(0.62f, 0.0f, 0.0f, 0.10f));
         AES_ER(-21.0f, -86.0f, 42.0f, 84.0f, FLinearColor(0.36f, 0.03f, 0.035f, 1.0f));
         AES_ER(-17.0f, -125.0f, 34.0f, 38.0f, FLinearColor(0.72f, 0.62f, 0.55f, 1.0f));
         AES_ER(-18.0f, -132.0f, 36.0f, 12.0f, FLinearColor(0.03f, 0.03f, 0.035f, 1.0f));
@@ -610,7 +679,9 @@ void AAesHUD::DrawEnemyFigure(const FAesEnemyState& Enemy, float X, float FeetY)
     else if (Enemy.Type.Contains(TEXT("Servi")))
     {
         const FLinearColor Rot = Enemy.HitFlash > 0.0f ? FLinearColor(1.0f, 0.25f, 0.22f, 1.0f) : FLinearColor(0.42f, 0.50f, 0.38f, 1.0f);
+        AES_ER(-48.0f, -108.0f, 96.0f, 106.0f, FLinearColor(0.36f, 0.08f, 0.02f, 0.10f));
         AES_ER(-42.0f, -100.0f, 84.0f, 98.0f, Rot);
+        AES_EL(-28.0f, -142.0f, 28.0f, -142.0f, FLinearColor(0.26f, 0.21f, 0.16f, 1.0f), 7.0f);
         AES_ER(-18.0f, -160.0f, 36.0f, 48.0f, FLinearColor(0.75f, 0.70f, 0.58f, 1.0f));
         AES_ER(-13.0f, -146.0f, 7.0f, 8.0f, FLinearColor(0.02f, 0.01f, 0.01f, 1.0f));
         AES_ER(6.0f, -146.0f, 7.0f, 8.0f, FLinearColor(0.02f, 0.01f, 0.01f, 1.0f));
@@ -625,6 +696,7 @@ void AAesHUD::DrawEnemyFigure(const FAesEnemyState& Enemy, float X, float FeetY)
     {
         const bool bBellum = Enemy.Type.Contains(TEXT("Bellum"));
         const FLinearColor Body = Enemy.HitFlash > 0.0f ? FLinearColor(1.0f, 0.20f, 0.20f, 1.0f) : bBellum ? FLinearColor(0.04f, 0.018f, 0.014f, 1.0f) : FLinearColor(0.42f, 0.10f, 0.42f, 1.0f);
+        AES_ER(-43.0f, -98.0f, 86.0f, 98.0f, bBellum ? FLinearColor(1.0f, 0.16f, 0.0f, 0.16f) : FLinearColor(0.46f, 0.0f, 0.46f, 0.10f));
         AES_ER(-35.0f, -81.0f, 70.0f, 80.0f, FLinearColor(0.02f, 0.01f, 0.01f, 1.0f));
         AES_ER(-28.0f, -76.0f, 56.0f, 74.0f, Body);
         AES_ER(-38.0f, -92.0f, 76.0f, 19.0f, bBellum ? Magma : FLinearColor(0.18f, 0.08f, 0.16f, 1.0f));
